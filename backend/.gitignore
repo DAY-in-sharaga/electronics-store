@@ -8,10 +8,6 @@
 *.vsp
 *.vspscc
 
-## Docker ##
-**/docker-compose*.yml
-**/Dockerfile*
-
 ## IDE ##
 .idea/
 .project/
