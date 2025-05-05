@@ -1,0 +1,21 @@
+# 1. идем в нужную директорию
+cd electronics-store
+cd backend
+
+# 2. получаем последние изменения из гита
+git fetch origin
+git checkout backend-dev
+git pull origin backend-dev
+
+# 3. пересобираем Docker-образ (1.2 - новая версия образа (изменить цифру при следующих обновлениях))
+docker build -t backend-prod:1.2 .
+
+# 4. останавливаем и удаляем старый контейнер
+docker stop backend
+docker rm backend
+
+# 5. запускам новый контейнер (1.2 - взять то же, что и на шаге # 3)
+sudo docker run -d   -p 5000:8080   --name backend   --restart unless-stopped   backend-prod:1.2
+
+# 6. проверяем ответ с сервера
+curl http://localhost:5000/products
