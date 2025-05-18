@@ -1,78 +1,61 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Store.Application;
+using Store.Application.Common.Mappings;
+using Store.Application.Interfaces;
+using Store.Persistence;
+using System.Reflection;
 
-// Сервисы
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options =>
+namespace Store.WebApi
 {
-    options.AddPolicy("StorePolicy", policy =>
+    public class Program
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddAutoMapper(config =>
+            {
+                config.AddProfile(
+                    new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
+                config.AddProfile(
+                    new AssemblyMappingProfile(typeof(IStoreDbContext).Assembly));
+            });
+            builder.Services.AddApplication();
+            builder.Services.AddPersistence(builder.Configuration);
+            builder.Services.AddControllers();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyOrigin();
+                });
+            });
+            builder.Services.AddDbContext<StoreDbContext>(
+                options => options.UseNpgsql(
+                    builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var app = builder.Build();
-
-// Конфигурация middleware
-app.UseCors("StorePolicy");
-app.UseHttpsRedirection();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+            var app = builder.Build();
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            app.UseHttpsRedirection();
+            app.UseRouting();
+            app.UseCors("AllowAll");
+            app.MapControllers();
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<StoreDbContext>();
+                    DbInitializer.Initialize(context);
+                }
+                catch (Exception ex) { }
+            }
+            app.Run();
+        }
+    }
 }
-
-// Эндпоинты API
-app.MapGet("/products", () =>
-{
-    var products = new[]
-    {
-        new Product(
-            Id: 1,
-            Name: "Ноутбук ASUS ROG Strix G15",
-            Category: "Laptops",
-            Price: 1499.99m,
-            Description: "Игровой ноутбук с процессором AMD Ryzen 9",
-            ImageUrl: "https://i.postimg.cc/rFGtsXDD/iphone.jpg",
-            Stock: 10
-        ),
-        new Product(
-            Id: 2,
-            Name: "Смартфон Samsung Galaxy S23 Ultra",
-            Category: "Smartphones",
-            Price: 1199.99m,
-            Description: "Флагманский смартфон с камерой 200 МП",
-            ImageUrl: "https://i.postimg.cc/rFGtsXDD/iphone.jpg",
-            Stock: 25
-        ),
-        new Product(
-            Id: 3,
-            Name: "Наушники Sony WH-1000XM5",
-            Category: "Headphones",
-            Price: 349.99m,
-            Description: "Беспроводные наушники с шумоподавлением",
-            ImageUrl: "https://i.postimg.cc/rFGtsXDD/iphone.jpg",
-            Stock: 15
-        )
-    };
-
-    return Results.Ok(products);
-})
-.WithName("GetProducts")
-.WithOpenApi();
-
-app.Run();
-
-// Модель данных
-public record Product(
-    int Id,
-    string Name,
-    string Category,
-    decimal Price,
-    string Description,
-    string ImageUrl,
-    int Stock
-);
