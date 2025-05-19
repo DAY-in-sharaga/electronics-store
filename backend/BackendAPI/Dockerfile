@@ -1,14 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0-preview AS build
 WORKDIR /src
-COPY *.sln .
-COPY BackendAPI/*.csproj ./BackendAPI/
-RUN dotnet restore
+COPY ["BackendAPI.csproj", "."]
+RUN dotnet restore "BackendAPI.csproj"
 COPY . .
-WORKDIR /src/BackendAPI
-RUN dotnet publish -c Release -o /app
+RUN dotnet publish "BackendAPI.csproj" -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0-preview
 WORKDIR /app
 COPY --from=build /app .
-EXPOSE 80
+ENV ASPNETCORE_URLS=http://+:8080
 ENTRYPOINT ["dotnet", "BackendAPI.dll"]

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\yurab\\Desktop\\ElectronicsStoreBackend\\BackendAPI\\BackendAPI.csproj": {}
+    "C:\\Users\\yurab\\Desktop\\electronics-store\\backend\\BackendAPI\\BackendAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\yurab\\Desktop\\ElectronicsStoreBackend\\BackendAPI\\BackendAPI.csproj": {
+    "C:\\Users\\yurab\\Desktop\\electronics-store\\backend\\BackendAPI\\BackendAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yurab\\Desktop\\ElectronicsStoreBackend\\BackendAPI\\BackendAPI.csproj",
+        "projectUniqueName": "C:\\Users\\yurab\\Desktop\\electronics-store\\backend\\BackendAPI\\BackendAPI.csproj",
         "projectName": "BackendAPI",
-        "projectPath": "C:\\Users\\yurab\\Desktop\\ElectronicsStoreBackend\\BackendAPI\\BackendAPI.csproj",
+        "projectPath": "C:\\Users\\yurab\\Desktop\\electronics-store\\backend\\BackendAPI\\BackendAPI.csproj",
         "packagesPath": "C:\\Users\\yurab\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yurab\\Desktop\\ElectronicsStoreBackend\\BackendAPI\\obj\\",
+        "outputPath": "C:\\Users\\yurab\\Desktop\\electronics-store\\backend\\BackendAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -51,7 +51,21 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[9.0.4, )"
             }
