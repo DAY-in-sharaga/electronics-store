@@ -13,12 +13,8 @@ WORKDIR /app
 COPY --from=build /app .
 COPY --from=build /root/.dotnet/tools /root/.dotnet/tools
 
-# Важно для .NET 9 Preview
+# Важные переменные окружения
+ENV PATH="/root/.dotnet/tools:${PATH}"
 ENV DOTNET_ROLL_FORWARD=Major
-ENV PATH="${PATH}:/root/.dotnet/tools"
-
-# Добавляем healthcheck
-HEALTHCHECK --interval=30s --timeout=5s \
-  CMD curl -f http://localhost:8080/health || exit 1
 
 ENTRYPOINT ["sh", "-c", "dotnet ef database update && dotnet BackendAPI.dll"]
