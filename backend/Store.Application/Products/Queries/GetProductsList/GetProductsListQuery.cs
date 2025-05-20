@@ -5,7 +5,7 @@ namespace Store.Application.Notes.Queries.GetNoteList
 {
     public class GetProductsListQuery : IRequest<ProductListVm>
     {
-        public string CategoryName { get; set; }
+        public List<string> CategoryNameList {get; set; }
     }
 }
 

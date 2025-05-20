@@ -15,10 +15,8 @@ namespace Store.Persistence.EntityTypeConfigurations
             builder.Property(product => product.Description).HasMaxLength(1000);
             builder.Property(product => product.Price).IsRequired().HasColumnType("decimal(18,2)");
             builder.Property(product => product.Stock).IsRequired().HasDefaultValue(0);
-            builder.HasOne(product => product.Category)
-                   .WithMany(category => category.Products)
-                   .HasForeignKey(product => product.CategoryId)
-                   .OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(product => product.CategoryList)
+                   .WithMany(category => category.ProductList);
         }
     }
 }

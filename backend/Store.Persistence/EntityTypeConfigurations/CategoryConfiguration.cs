@@ -11,10 +11,8 @@ namespace Store.Persistence.EntityTypeConfigurations
             builder.HasKey(category => category.CategoryId);
             builder.HasIndex(category => category.CategoryId).IsUnique();
             builder.Property(category => category.Name).IsRequired().HasMaxLength(100);
-            builder.HasMany(category => category.Products)
-                   .WithOne(product => product.Category)
-                   .HasForeignKey(product => product.CategoryId)
-                   .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(category => category.ProductList)
+                   .WithMany(product => product.CategoryList);
         }
     }
 }
