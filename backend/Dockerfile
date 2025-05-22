@@ -13,6 +13,10 @@ COPY Presentation/*.csproj ./Presentation/
 # Восстанавливаем зависимости
 RUN dotnet restore
 
+# Устанавливаем dotnet-ef
+RUN dotnet tool install --global dotnet-ef --version 7.0.0
+ENV PATH="$PATH:/root/.dotnet/tools"
+
 # Копируем все файлы (включая Migrations, если они уже существуют)
 COPY . .
 
