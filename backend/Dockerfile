@@ -13,7 +13,8 @@ COPY Presentation/*.csproj ./Presentation/
 # Восстанавливаем зависимости
 RUN dotnet restore
 
-# Копируем весь остальной код
+# Явно копируем папку Migrations перед копированием всего остального
+COPY Store.Persistence/Migrations/ ./Store.Persistence/Migrations/
 COPY . .
 
 # Публикуем приложение
