@@ -13,9 +13,11 @@ COPY Presentation/*.csproj ./Presentation/
 # Восстанавливаем зависимости
 RUN dotnet restore
 
-# Явно копируем папку Migrations перед копированием всего остального
-COPY Store.Persistence/Migrations/ ./Store.Persistence/Migrations/
+# Копируем все файлы (включая Migrations, если они уже существуют)
 COPY . .
+
+# Создаем миграции (если их еще нет)
+RUN dotnet ef migrations add InitialCreate --project Store.Persistence --output-dir Migrations
 
 # Публикуем приложение
 RUN dotnet publish Presentation/BackendAPI.csproj -c Release -o out
