@@ -14,7 +14,7 @@ namespace Notes.WebApi.Controllers
         private readonly IMapper _mapper;
         public ProductController(IMapper mapper) => _mapper = mapper;
         [HttpGet("{CategoryName}")]
-        public async Task<ActionResult<ProductListVm>> GetAll(List<string> CategoryNameList)
+        public async Task<ActionResult<ProductListVm>> GetAll([FromQuery] List<string> CategoryNameList)
         {
             var query = new GetProductsListQuery
             {
