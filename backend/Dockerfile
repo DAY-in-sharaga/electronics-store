@@ -13,9 +13,6 @@ RUN dotnet restore
 # Копируем ВСЕ файлы проекта
 COPY . .
 
-# Копируем миграции из проекта Persistence
-COPY Store.Persistence/Migrations ./Store.Persistence/Migrations
-
 RUN dotnet publish Presentation/BackendAPI.csproj -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0-preview AS runtime
