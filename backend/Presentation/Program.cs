@@ -54,11 +54,11 @@ namespace Store.WebApi
                     context.Database.Migrate();
                     DbInitializer.Initialize(context);
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     Console.WriteLine("Migration failed: " + ex.Message);
                     Console.WriteLine(ex.StackTrace);
-                    throw; 
+                    throw;
                 }
             }
             app.Run();
