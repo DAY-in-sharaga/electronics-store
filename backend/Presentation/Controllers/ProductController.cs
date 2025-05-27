@@ -13,12 +13,12 @@ namespace Notes.WebApi.Controllers
     {
         private readonly IMapper _mapper;
         public ProductController(IMapper mapper) => _mapper = mapper;
-        [HttpGet("{CategoryName}")]
-        public async Task<ActionResult<ProductListVm>> GetAll([FromQuery] List<string> CategoryNameList)
+        [HttpGet]
+        public async Task<ActionResult<ProductListVm>> GetAll([FromQuery] List<string> categoryNameList)
         {
             var query = new GetProductsListQuery
             {
-                CategoryNameList = CategoryNameList
+                CategoryNameList = categoryNameList
             };
             var vm = await Mediator.Send(query);
             return Ok(vm);
