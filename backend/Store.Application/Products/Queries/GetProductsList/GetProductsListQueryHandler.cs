@@ -32,7 +32,7 @@ namespace Store.Application.Notes.Queries.GetNoteList
                 .ToListAsync(cancellationToken);
 
             var productsQuery = await _dbContext.Products
-                .Where(product => product.CategoryIdList.Any(id => categoryIdList.Contains(id)))
+                .Where(product => categoryIdList.All(id => product.CategoryIdList.Contains(id)))
                 .ProjectTo<ProductLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
