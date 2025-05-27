@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0-preview AS build
+FROM mcr.microsoft.com/dotnet/nightly/sdk:9.0 AS build
 WORKDIR /app
 
 # Копируем .sln и csproj
