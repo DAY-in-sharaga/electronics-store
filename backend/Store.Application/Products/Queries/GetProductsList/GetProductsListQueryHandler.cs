@@ -32,11 +32,12 @@ namespace Store.Application.Notes.Queries.GetNoteList
                 .ToListAsync(cancellationToken);
 
             var productsQuery = await _dbContext.Products
-                .Where(product => product.CategoryIdList.Except(categoryIdList).Count() == 0)
+                .Where(product => product.CategoryIdList.Any(id => categoryIdList.Contains(id)))
                 .ProjectTo<ProductLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
             return new ProductListVm { Products = productsQuery };
         }
+
     }
 }
