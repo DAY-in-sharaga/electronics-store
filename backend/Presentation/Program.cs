@@ -42,6 +42,9 @@ namespace Store.WebApi
             app.UseRouting();
             app.UseCors("AllowAll");
             app.MapControllers();
+
+            app.MapGet("/health", () => Results.Ok());
+
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
