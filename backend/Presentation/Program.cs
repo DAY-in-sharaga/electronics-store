@@ -50,8 +50,20 @@ namespace Store.WebApi
                 var services = scope.ServiceProvider;
                 try
                 {
+                    // Добавьте логгирование строки подключения
+                    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                    Console.WriteLine($"Using connection string: {connectionString}");
+
                     var context = services.GetRequiredService<StoreDbContext>();
-                    context.Database.Migrate();
+                    if (context.Database.CanConnect())
+                    {
+                        Console.WriteLine("Database exists, applying migrations...");
+                        context.Database.Migrate();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Cannot connect to database!");
+                    }
                     DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
@@ -61,6 +73,20 @@ namespace Store.WebApi
                     throw;
                 }
             }
+
+            app.MapGet("/dbcheck", async (StoreDbContext dbContext) =>
+            {
+                try
+                {
+                    var canConnect = await dbContext.Database.CanConnectAsync();
+                    return Results.Ok(new { db_available = canConnect });
+                }
+                catch (Exception ex)
+                {
+                    return Results.Problem(ex.Message);
+                }
+            });
+
             app.Run();
         }
     }
