@@ -51,34 +51,36 @@ namespace Store.WebApi
 
             app.MapGet("/health", () => Results.Ok());
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                try
-                {
-                    // Добавьте логгирование строки подключения
-                    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-                    Console.WriteLine($"Using connection string: {connectionString}");
+            app.MapGet("/test", () => "API is working!");
 
-                    var context = services.GetRequiredService<StoreDbContext>();
-                    if (context.Database.CanConnect())
-                    {
-                        Console.WriteLine("Database exists, applying migrations...");
-                        context.Database.Migrate();
-                    }
-                    else
-                    {
-                        Console.WriteLine("Cannot connect to database!");
-                    }
-                    DbInitializer.Initialize(context);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Migration failed: " + ex.Message);
-                    Console.WriteLine(ex.StackTrace);
-                    throw;
-                }
-            }
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var services = scope.ServiceProvider;
+            //    try
+            //    {
+            //        // Добавьте логгирование строки подключения
+            //        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            //        Console.WriteLine($"Using connection string: {connectionString}");
+
+            //        var context = services.GetRequiredService<StoreDbContext>();
+            //        if (context.Database.CanConnect())
+            //        {
+            //            Console.WriteLine("Database exists, applying migrations...");
+            //            context.Database.Migrate();
+            //        }
+            //        else
+            //        {
+            //            Console.WriteLine("Cannot connect to database!");
+            //        }
+            //        DbInitializer.Initialize(context);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine("Migration failed: " + ex.Message);
+            //        Console.WriteLine(ex.StackTrace);
+            //        throw;
+            //    }
+            //}
 
             app.MapGet("/dbcheck", async (StoreDbContext dbContext) =>
             {
