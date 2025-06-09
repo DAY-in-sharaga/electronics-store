@@ -10,7 +10,7 @@ namespace Store.Persistence
         public static IServiceCollection AddPersistence(
             this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration["DbConnection"];
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<StoreDbContext>(options =>
             {
                 options.UseNpgsql(connectionString);
