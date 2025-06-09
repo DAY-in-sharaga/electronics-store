@@ -18,5 +18,4 @@ RUN dotnet publish Presentation/BackendAPI.csproj -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out .
-COPY wait-for-db.sh .
-ENTRYPOINT ["./wait-for-db.sh"]
+ENTRYPOINT ["dotnet", "BackendAPI.dll"]
