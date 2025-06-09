@@ -38,5 +38,6 @@ namespace Store.Application.Notes.Queries.GetNoteList
 
             return new ProductListVm { Products = productsQuery };
         }
+
     }
 }

@@ -12,7 +12,22 @@ namespace Store.WebApi
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .Build();
+
+            var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+            {
+                Args = args,
+                ContentRootPath = Directory.GetCurrentDirectory(),
+                EnvironmentName = config["ASPNETCORE_ENVIRONMENT"] ?? "Development"
+            });
+
+            builder.Configuration.AddConfiguration(config);
+
             builder.Services.AddAutoMapper(config =>
             {
                 config.AddProfile(
@@ -32,9 +47,6 @@ namespace Store.WebApi
                     policy.AllowAnyOrigin();
                 });
             });
-            builder.Services.AddDbContext<StoreDbContext>(
-                options => options.UseNpgsql(
-                    builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
             if (app.Environment.IsDevelopment())
@@ -45,22 +57,53 @@ namespace Store.WebApi
             app.UseRouting();
             app.UseCors("AllowAll");
             app.MapControllers();
+
+            app.MapGet("/health", () => Results.Ok());
+
+            app.MapGet("/test", () => "API is working!");
+
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 try
                 {
+                    // Добавьте логгирование строки подключения
+                    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                    Console.WriteLine($"Using connection string: {connectionString}");
+
                     var context = services.GetRequiredService<StoreDbContext>();
-                    context.Database.Migrate();
+                    if (context.Database.CanConnect())
+                    {
+                        Console.WriteLine("Database exists, applying migrations...");
+                        context.Database.Migrate();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Cannot connect to database!");
+                    }
                     DbInitializer.Initialize(context);
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     Console.WriteLine("Migration failed: " + ex.Message);
                     Console.WriteLine(ex.StackTrace);
-                    throw; 
+                    throw;
                 }
             }
+
+            app.MapGet("/dbcheck", async (StoreDbContext dbContext) =>
+            {
+                try
+                {
+                    var canConnect = await dbContext.Database.CanConnectAsync();
+                    return Results.Ok(new { db_available = canConnect });
+                }
+                catch (Exception ex)
+                {
+                    return Results.Problem(ex.Message);
+                }
+            });
+
             app.Run();
         }
     }

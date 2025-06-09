@@ -1,29 +1,22 @@
-# Используем официальный .NET SDK для сборки
-FROM mcr.microsoft.com/dotnet/sdk:9.0-preview AS build
-
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-# Копируем .sln и все csproj
-COPY *.sln ./
+# Копируем .sln и csproj
+COPY *.sln .
 COPY Store.Application/*.csproj ./Store.Application/
 COPY Store.Domain/*.csproj ./Store.Domain/
 COPY Store.Persistence/*.csproj ./Store.Persistence/
 COPY Presentation/*.csproj ./Presentation/
 
-# Восстанавливаем зависимости
 RUN dotnet restore
 
-# Явно копируем папку Migrations перед копированием всего остального
-COPY Store.Persistence/Migrations/ ./Store.Persistence/Migrations/
+# Копируем ВСЕ файлы проекта
 COPY . .
 
-# Публикуем приложение
 RUN dotnet publish Presentation/BackendAPI.csproj -c Release -o out
 
-# Используем runtime образ для запуска
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-preview AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out .
-
-# Запускаем
-ENTRYPOINT ["dotnet", "BackendAPI.dll"]
+COPY wait-for-db.sh .
+ENTRYPOINT ["./wait-for-db.sh"]
