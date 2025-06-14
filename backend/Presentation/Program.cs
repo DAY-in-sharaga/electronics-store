@@ -50,6 +50,7 @@ namespace Store.WebApi
                 try
                 {
                     var context = services.GetRequiredService<StoreDbContext>();
+                    context.Database.Migrate();
                     DbInitializer.Initialize(context);
                 }
                 catch (Exception ex) { }
