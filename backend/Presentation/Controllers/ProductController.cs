@@ -24,6 +24,5 @@ namespace Notes.WebApi.Controllers
             var vm = await Mediator.Send(query);
             return Ok(vm);
         }
-
     }
 }

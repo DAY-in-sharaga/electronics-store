@@ -40,4 +40,5 @@ namespace Store.Application.Notes.Queries.GetNoteList
         }
 
     }
+    
 }
