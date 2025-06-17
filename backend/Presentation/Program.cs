@@ -34,7 +34,12 @@ namespace Store.WebApi
             builder.Services.AddDbContext<StoreDbContext>(
                 options => options.UseNpgsql(
                     builder.Configuration.GetConnectionString("DefaultConnection")));
-
+            builder.Services.AddAuthentication("Cookies")
+                .AddCookie("Cookies", options =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    options.LogoutPath = "/Account/Logout";
+                });
             var app = builder.Build();
             if (app.Environment.IsDevelopment())
             {
@@ -43,6 +48,8 @@ namespace Store.WebApi
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("AllowAll");
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.MapControllers();
             using (var scope = app.Services.CreateScope())
             {
