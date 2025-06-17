@@ -5,8 +5,6 @@
 //  Created by Adel Mansurov on 03.06.2025.
 //
 
-
-// Views/ChatRoomView.swift
 import SwiftUI
 
 struct ChatRoomView: View {
@@ -28,7 +26,8 @@ struct ChatRoomView: View {
                                         .background(Color.blue.opacity(0.8))
                                         .foregroundColor(.white)
                                         .cornerRadius(12)
-                                        .frame(maxWidth: UIScreen.main.bounds.width * 0.7, alignment: .trailing)
+                                        .frame(maxWidth: UIScreen.main.bounds.width * 0.7,
+                                               alignment: .trailing)
                                 } else {
                                     Text(msg.text)
                                         .padding(.vertical, 8)
@@ -36,7 +35,8 @@ struct ChatRoomView: View {
                                         .background(Color(.systemGray5))
                                         .foregroundColor(.primary)
                                         .cornerRadius(12)
-                                        .frame(maxWidth: UIScreen.main.bounds.width * 0.7, alignment: .leading)
+                                        .frame(maxWidth: UIScreen.main.bounds.width * 0.7,
+                                               alignment: .leading)
                                     Spacer()
                                 }
                             }
@@ -68,9 +68,14 @@ struct ChatRoomView: View {
                     Image(systemName: "paperplane.fill")
                         .rotationEffect(.degrees(45))
                         .font(.title2)
-                        .foregroundColor(vm.newMessageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .gray : .blue)
+                        .foregroundColor(vm.newMessageText
+                                            .trimmingCharacters(in: .whitespacesAndNewlines)
+                                            .isEmpty
+                                        ? .gray : .blue)
                 }
-                .disabled(vm.newMessageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .disabled(vm.newMessageText
+                              .trimmingCharacters(in: .whitespacesAndNewlines)
+                              .isEmpty)
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
@@ -78,13 +83,5 @@ struct ChatRoomView: View {
         }
         .navigationTitle("Чат")
         .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-struct ChatRoomView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            ChatRoomView()
-        }
     }
 }

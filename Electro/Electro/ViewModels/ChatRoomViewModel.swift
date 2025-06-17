@@ -5,8 +5,6 @@
 //  Created by Adel Mansurov on 03.06.2025.
 //
 
-
-// ViewModels/ChatRoomViewModel.swift
 import Foundation
 import Combine
 
@@ -14,15 +12,18 @@ final class ChatRoomViewModel: ObservableObject {
     @Published var messages: [Message] = []
     @Published var newMessageText: String = ""
 
-    // Здесь можно имитировать ответ оператора — каждый раз, когда пользователь отправляет, боту придёт «заглушка»
     private var cancellables = Set<AnyCancellable>()
 
     init() {
-        // Опционально: по таймеру или по отправке нового сообщения — бот ответит через секунду
+        // Подписываемся на изменения messages, пропускаем начальное состояние,
+        // реагируем только на новые пользовательские сообщения
         $messages
-            .compactMap { _ in }
-            .sink { [weak self] _ in
-                self?.simulateBotResponse()
+            .dropFirst()
+            .sink { [weak self] msgs in
+                guard let self = self,
+                      let last = msgs.last,
+                      last.isUser else { return }
+                self.simulateBotResponse()
             }
             .store(in: &cancellables)
     }
@@ -38,10 +39,14 @@ final class ChatRoomViewModel: ObservableObject {
 
     /// Заглушка: ответ оператора через 1.5 секунды после последнего сообщения пользователя
     private func simulateBotResponse() {
-        guard let last = messages.last, last.isUser else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
-            let reply = Message(text: "Спасибо за сообщение! Оператор свяжется с вами в ближайшее время.", isUser: false, timestamp: Date())
-            self?.messages.append(reply)
+            guard let self = self else { return }
+            let reply = Message(
+                text: "Спасибо за сообщение! Оператор свяжется с вами в ближайшее время.",
+                isUser: false,
+                timestamp: Date()
+            )
+            self.messages.append(reply)
         }
     }
 }
