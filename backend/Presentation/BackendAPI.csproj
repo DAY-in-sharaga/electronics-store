@@ -26,4 +26,8 @@
     <ProjectReference Include="..\Store.Persistence\Store.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Model\" />
+  </ItemGroup>
+
 </Project>

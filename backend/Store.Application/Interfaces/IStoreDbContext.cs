@@ -11,6 +11,7 @@ namespace Store.Application.Interfaces
         DbSet<Order> Orders { get; set; }
         DbSet<Product> Products { get; set; }
         DbSet<Category> Categories { get; set; }
+        DbSet<Favorite> Favorites { get; set; }
     }
 }
 

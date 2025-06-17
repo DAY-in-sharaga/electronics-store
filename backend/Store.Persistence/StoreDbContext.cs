@@ -13,6 +13,8 @@ namespace Store.Persistence
         public DbSet<Category> Categories { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
+
 
         public StoreDbContext(DbContextOptions<StoreDbContext> options)
             : base(options) { }
@@ -24,7 +26,8 @@ namespace Store.Persistence
                 .ApplyConfiguration(new ProductConfiguration())
                 .ApplyConfiguration(new CategoryConfiguration())
                 .ApplyConfiguration(new CartConfiguration())
-                .ApplyConfiguration(new CartItemConfiguration());
+                .ApplyConfiguration(new CartItemConfiguration())
+                .ApplyConfiguration(new FavoriteConfiguration());
             base.OnModelCreating(builder);
         }
     }
