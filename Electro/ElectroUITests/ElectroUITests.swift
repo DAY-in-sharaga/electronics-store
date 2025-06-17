@@ -1,10 +1,3 @@
-//
-//  ElectroUITests.swift
-//  ElectroUITests
-//
-//  Created by Adel Mansurov on 22.04.2025.
-//
-
 import XCTest
 
 final class ElectroUITests: XCTestCase {

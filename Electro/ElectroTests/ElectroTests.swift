@@ -1,10 +1,3 @@
-//
-//  ElectroTests.swift
-//  ElectroTests
-//
-//  Created by Adel Mansurov on 22.04.2025.
-//
-
 import Testing
 @testable import Electro
 
