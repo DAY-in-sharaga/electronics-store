@@ -1,21 +1,19 @@
-//
-//  CategoryProductsView.swift
-//  Electro
-//
-//  Created by Adel Mansurov on 03.06.2025.
-//
-
-
-// Views/CategoryProductsView.swift
 import SwiftUI
 
 struct CategoryProductsView: View {
-    let filterKey: String              // например "Phones"
+    let filterKey: String
     @StateObject private var allProductsVM = ProductListViewModel()
     @EnvironmentObject private var navigationVM: NavigationViewModel
 
+    // Источник — либо данные с сервера, либо sampleApple, если сервер пустой
+    private var sourceProducts: [Product] {
+        allProductsVM.products.isEmpty
+            ? Product.sampleApple
+            : allProductsVM.products
+    }
+
     private var filteredProducts: [Product] {
-        allProductsVM.products.filter { $0.category == filterKey }
+        sourceProducts.filter { $0.category == filterKey }
     }
 
     private let columns = [
@@ -29,29 +27,30 @@ struct CategoryProductsView: View {
                 .fontWeight(.bold)
                 .padding(.horizontal)
 
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(filteredProducts) { product in
-                        NavigationLink(value: Route.detail(product: product)) {
-                            ProductCellView(product: product)
+            if filteredProducts.isEmpty {
+                // Показать спиннер или сообщение, если ничго не найдено
+                ProgressView("Загрузка…")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            } else {
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 16) {
+                        ForEach(filteredProducts) { product in
+                            NavigationLink(value: Route.detail(product: product)) {
+                                ProductCellView(product: product)
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }
-                        .buttonStyle(PlainButtonStyle())
                     }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
             }
         }
         .padding(.top)
-        .navigationTitle("\(filterKey)")
+        .navigationTitle(filterKey)
         .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-struct CategoryProductsView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            CategoryProductsView(filterKey: "Phones")
-                .environmentObject(NavigationViewModel())
+        // На всякий случай ещё раз вызываем загрузку при появлении
+        .task {
+            await allProductsVM.loadProducts()
         }
     }
 }

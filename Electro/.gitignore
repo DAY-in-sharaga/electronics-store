@@ -1,0 +1,8 @@
+# macOS system files
+.DS_Store
+Electro/.DS_Store
+Electro/Electro/.DS_Store
+
+# Xcode user interface state file
+Electro/Electro.xcodeproj/project.xcworkspace/xcuserdata/adelmansurov.xcuserdatad/UserInterfaceState.xcuserstate
+

@@ -16,7 +16,7 @@ final class ProductListViewModel: ObservableObject {
     }
 
     @MainActor
-    private func loadProducts() async {
+    func loadProducts() async {
         guard let url = URL(string: urlString) else { return }
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
